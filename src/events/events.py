@@ -62,14 +62,14 @@ def fs_trigger_event(
         event = {
             "index": len(gamestate.book.events),
             "type": EventConstants.FREESPINTRIGGER.value,
-            "totalFs": gamestate.tot_fs,
+            "total": gamestate.tot_fs,
             "positions": scatter_positions,
         }
     elif freegame_trigger:
         event = {
             "index": len(gamestate.book.events),
             "type": EventConstants.FREESPINRETRIGGER.value,
-            "totalFs": gamestate.tot_fs,
+            "total": gamestate.tot_fs,
             "positions": scatter_positions,
         }
 
