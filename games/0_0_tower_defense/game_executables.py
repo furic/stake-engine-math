@@ -6,7 +6,7 @@ from copy import copy
 
 from game_calculations import GameCalculations
 from src.calculations.scatter import Scatter
-from game_events import send_mult_info_event
+from game_events import send_mult_info_event, reveal_event
 from src.events.events import (
     set_win_event,
     set_total_event,
@@ -19,6 +19,15 @@ from src.events.events import (
 
 class GameExecutables(GameCalculations):
     """Game specific executable functions. Used for grouping commonly used/repeated applications."""
+
+    def draw_board(self, emit_event: bool = True):
+        """Override to use custom reveal_event that excludes paddingPositions and anticipation"""
+        # Call the parent's draw_board method but with emit_event=False
+        super().draw_board(emit_event=False)
+
+        # Use our custom reveal_event if emit_event is True
+        if emit_event:
+            reveal_event(self)
 
     def set_end_tumble_event(self):
         """After all tumbling events have finished, multiply tumble-win by sum of mult symbols."""
