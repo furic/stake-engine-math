@@ -14,6 +14,7 @@ from src.events.events import (
     update_tumble_win_event,
     update_global_mult_event,
     update_freespin_event,
+    win_info_event,
 )
 
 
@@ -56,7 +57,19 @@ class GameExecutables(GameCalculations):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        fs_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        fs_trigger_event(self, include_padding_index=False, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+
+    def emit_tumble_win_events(self) -> None:
+        """Transmit win and new board information upon tumble - Override to handle non-padded positions."""
+        if self.win_data["totalWin"] > 0:
+            win_info_event(self, include_padding_index=False)
+            update_tumble_win_event(self)
+            self.evaluate_wincap()
+
+    def update_fs_retrigger_amt(self, scatter_key: str = "scatter") -> None:
+        """Update total freespin amount on retrigger - Override to handle non-padded positions."""
+        self.tot_fs += self.config.freespin_triggers[self.gametype][self.count_special_symbols(scatter_key)]
+        fs_trigger_event(self, include_padding_index=False, freegame_trigger=True, basegame_trigger=False)
 
     def get_scatterpays_update_wins(self):
         """Return the board since we are assigning the 'explode' attribute."""

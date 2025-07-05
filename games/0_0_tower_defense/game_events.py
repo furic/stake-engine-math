@@ -50,7 +50,7 @@ def send_mult_info_event(gamestate, board_mult: int, mult_info: dict, base_win: 
                 {"reel": mult_info[m]["reel"], "row": mult_info[m]["row"] + 1, "multiplier": mult_info[m]["value"]}
             )
     else:
-        for m in range(mult_info):
+        for m in range(len(mult_info)):
             multiplier_info["positions"].append(
                 {"reel": mult_info[m]["reel"], "row": mult_info[m]["row"], "multiplier": mult_info[m]["value"]}
             )

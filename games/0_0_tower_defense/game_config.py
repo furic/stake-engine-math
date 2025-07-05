@@ -60,7 +60,7 @@ class GameConfig(Config):
         }
         self.paytable = self.convert_range_table(pay_group)
 
-        self.include_padding = True
+        self.include_padding = False
         self.special_symbols = {"wild": ["W"], "scatter": ["S"], "multiplier": ["M"]}
 
         self.freespin_triggers = {
