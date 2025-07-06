@@ -6,7 +6,7 @@ from copy import copy
 
 from game_calculations import GameCalculations
 from src.calculations.scatter import Scatter
-from game_events import send_mult_info_event, reveal_event
+from game_events import send_mult_info_event
 from src.events.events import (
     set_win_event,
     set_total_event,
@@ -14,21 +14,11 @@ from src.events.events import (
     update_tumble_win_event,
     update_global_mult_event,
     update_freespin_event,
-    win_info_event,
 )
 
 
 class GameExecutables(GameCalculations):
     """Game specific executable functions. Used for grouping commonly used/repeated applications."""
-
-    def draw_board(self, emit_event: bool = True):
-        """Override to use custom reveal_event that excludes paddingPositions and anticipation"""
-        # Call the parent's draw_board method but with emit_event=False
-        super().draw_board(emit_event=False)
-
-        # Use our custom reveal_event if emit_event is True
-        if emit_event:
-            reveal_event(self)
 
     def set_end_tumble_event(self):
         """After all tumbling events have finished, multiply tumble-win by sum of mult symbols."""
@@ -57,19 +47,7 @@ class GameExecutables(GameCalculations):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        fs_trigger_event(self, include_padding_index=False, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
-
-    def emit_tumble_win_events(self) -> None:
-        """Transmit win and new board information upon tumble - Override to handle non-padded positions."""
-        if self.win_data["totalWin"] > 0:
-            win_info_event(self, include_padding_index=False)
-            update_tumble_win_event(self)
-            self.evaluate_wincap()
-
-    def update_fs_retrigger_amt(self, scatter_key: str = "scatter") -> None:
-        """Update total freespin amount on retrigger - Override to handle non-padded positions."""
-        self.tot_fs += self.config.freespin_triggers[self.gametype][self.count_special_symbols(scatter_key)]
-        fs_trigger_event(self, include_padding_index=False, freegame_trigger=True, basegame_trigger=False)
+        fs_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def get_scatterpays_update_wins(self):
         """Return the board since we are assigning the 'explode' attribute."""

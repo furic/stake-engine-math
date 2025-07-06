@@ -31,105 +31,29 @@ class GameConfig(Config):
         # Game Dimensions
         self.num_reels = 5
         self.num_rows = [5] * self.num_reels  # Optionally include variable number of rows per reel
-        # Board and Symbol Properties - Cluster Pay (optimized ranges for performance)
+        # Board and Symbol Properties - Cluster Pay (optimized for performance)
         # Format: ((min_cluster, max_cluster), "symbol"): payout_multiplier
-        # Reduced individual entries to improve simulation performance
+        # Reduced to 3-7 cluster sizes for better performance
+        t1, t2, t3 = (3, 4), (5, 6), (7, 8)
         pay_group = {
-            # H1 - Premium symbol
-            ((3, 3), "H1"): 1.0,
-            ((4, 4), "H1"): 2.0,
-            ((5, 5), "H1"): 4.0,
-            ((6, 6), "H1"): 8.0,
-            # Commenting out 7+ cluster pays for performance optimization
-            # ((7, 7), "H1"): 15.0,
-            # ((8, 8), "H1"): 25.0,
-            # ((9, 9), "H1"): 40.0,
-            # ((10, 10), "H1"): 60.0,
-            # ((11, 11), "H1"): 80.0,
-            # ((12, 12), "H1"): 120.0,
-            # ((13, 13), "H1"): 180.0,
-            # ((14, 14), "H1"): 250.0,
-            # ((15, 25), "H1"): 500.0,  # 15+ clusters
-            
-            # H2 - High symbol
-            ((3, 3), "H2"): 0.8,
-            ((4, 4), "H2"): 1.5,
-            ((5, 5), "H2"): 3.0,
-            ((6, 6), "H2"): 6.0,
-            # Commenting out 7+ cluster pays for performance optimization
-            # ((7, 7), "H2"): 12.0,
-            # ((8, 8), "H2"): 20.0,
-            # ((9, 9), "H2"): 32.0,
-            # ((10, 10), "H2"): 48.0,
-            # ((11, 11), "H2"): 65.0,
-            # ((12, 12), "H2"): 90.0,
-            # ((13, 13), "H2"): 140.0,
-            # ((14, 14), "H2"): 200.0,
-            # ((15, 25), "H2"): 400.0,  # 15+ clusters
-            
-            # H3 - Medium symbol
-            ((3, 3), "H3"): 0.6,
-            ((4, 4), "H3"): 1.2,
-            ((5, 5), "H3"): 2.4,
-            ((6, 6), "H3"): 4.8,
-            # Commenting out 7+ cluster pays for performance optimization
-            # ((7, 7), "H3"): 9.0,
-            # ((8, 8), "H3"): 15.0,
-            # ((9, 9), "H3"): 24.0,
-            # ((10, 10), "H3"): 36.0,
-            # ((11, 11), "H3"): 50.0,
-            # ((12, 12), "H3"): 70.0,
-            # ((13, 13), "H3"): 100.0,
-            # ((14, 14), "H3"): 150.0,
-            # ((15, 25), "H3"): 300.0,  # 15+ clusters
-            
-            # L1 - Low symbol
-            ((3, 3), "L1"): 0.4,
-            ((4, 4), "L1"): 0.8,
-            ((5, 5), "L1"): 1.6,
-            ((6, 6), "L1"): 3.2,
-            # Commenting out 7+ cluster pays for performance optimization
-            # ((7, 7), "L1"): 6.0,
-            # ((8, 8), "L1"): 10.0,
-            # ((9, 9), "L1"): 16.0,
-            # ((10, 10), "L1"): 24.0,
-            # ((11, 11), "L1"): 35.0,
-            # ((12, 12), "L1"): 50.0,
-            # ((13, 13), "L1"): 75.0,
-            # ((14, 14), "L1"): 110.0,
-            # ((15, 25), "L1"): 200.0,  # 15+ clusters
-            
-            # L2 - Lower symbol
-            ((3, 3), "L2"): 0.3,
-            ((4, 4), "L2"): 0.6,
-            ((5, 5), "L2"): 1.2,
-            ((6, 6), "L2"): 2.4,
-            # Commenting out 7+ cluster pays for performance optimization
-            # ((7, 7), "L2"): 4.5,
-            # ((8, 8), "L2"): 7.5,
-            # ((9, 9), "L2"): 12.0,
-            # ((10, 10), "L2"): 18.0,
-            # ((11, 11), "L2"): 26.0,
-            # ((12, 12), "L2"): 38.0,
-            # ((13, 13), "L2"): 55.0,
-            # ((14, 14), "L2"): 80.0,
-            # ((15, 25), "L2"): 150.0,  # 15+ clusters
-            
-            # L3 - Lowest symbol
-            ((3, 3), "L3"): 0.2,
-            ((4, 4), "L3"): 0.4,
-            ((5, 5), "L3"): 0.8,
-            ((6, 6), "L3"): 1.6,
-            # Commenting out 7+ cluster pays for performance optimization
-            # ((7, 7), "L3"): 3.0,
-            # ((8, 8), "L3"): 5.0,
-            # ((9, 9), "L3"): 8.0,
-            # ((10, 10), "L3"): 12.0,
-            # ((11, 11), "L3"): 18.0,
-            # ((12, 12), "L3"): 26.0,
-            # ((13, 13), "L3"): 38.0,
-            # ((14, 14), "L3"): 55.0,
-            # ((15, 25), "L3"): 100.0,  # 15+ clusters
+            (t1, "H1"): 1.0,
+            (t2, "H1"): 3.0,
+            (t3, "H1"): 7.5,
+            (t1, "H2"): 0.8,
+            (t2, "H2"): 2.0,
+            (t3, "H2"): 5.0,
+            (t1, "H3"): 0.6,
+            (t2, "H3"): 1.3,
+            (t3, "H3"): 3.2,
+            (t1, "L1"): 0.4,
+            (t2, "L1"): 0.6,
+            (t3, "L1"): 1.5,
+            (t1, "L2"): 0.3,
+            (t2, "L2"): 0.4,
+            (t3, "L2"): 1.2,
+            (t1, "L3"): 0.2,
+            (t2, "L3"): 0.2,
+            (t3, "L3"): 0.8,
         }
         self.paytable = self.convert_range_table(pay_group)
 
