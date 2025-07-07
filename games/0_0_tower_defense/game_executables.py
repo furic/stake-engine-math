@@ -7,7 +7,7 @@ from copy import copy
 from game_calculations import GameCalculations
 from src.calculations.scatter import Scatter
 from src.calculations.cluster import Cluster
-from game_events import send_mult_info_event
+from game_events import send_mult_info_event, reveal_event
 from src.events.events import (
     set_win_event,
     set_total_event,
@@ -122,3 +122,12 @@ class GameExecutables(GameCalculations):
         # Emit win events if there are any wins
         if self.win_data["totalWin"] > 0:
             win_info_event(self, include_padding_index=False)
+
+    def draw_board(self, emit_event: bool = True, trigger_symbol: str = "scatter") -> None:
+        """Override to use custom reveal_event without paddingPositions and anticipation."""
+        # Call parent draw_board but without emitting the event
+        super().draw_board(emit_event=False, trigger_symbol=trigger_symbol)
+        
+        # Emit our custom reveal_event if needed
+        if emit_event:
+            reveal_event(self)
