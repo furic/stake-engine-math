@@ -13,6 +13,7 @@ from src.events.events import (
     set_total_event,
     fs_trigger_event,
     update_tumble_win_event,
+    win_info_event,
     update_global_mult_event,
     update_freespin_event,
 )
@@ -72,15 +73,14 @@ class GameExecutables(GameCalculations):
         self.win_data = {}
 
     def get_clusters_update_wins(self):
-        """Find clusters on board and update win manager with simplified win metadata."""
+        """Find clusters on board and update win manager - simplified without tumbling."""
         clusters = Cluster.get_clusters(self.board, "wild")
         return_data = {
             "totalWin": 0,
             "wins": [],
         }
 
-        # Custom cluster evaluation without clusterMult and overlay
-        exploding_symbols = []
+        # Custom cluster evaluation without exploding symbols (no tumbling)
         total_win = 0
         for sym in clusters:
             for cluster in clusters[sym]:
@@ -103,18 +103,22 @@ class GameExecutables(GameCalculations):
                             },
                         }
                     ]
-
-                    for positions in cluster:
-                        self.board[positions[0]][positions[1]].explode = True
-                        if {
-                            "reel": positions[0],
-                            "row": positions[1],
-                        } not in exploding_symbols:
-                            exploding_symbols.append({"reel": positions[0], "row": positions[1]})
+                    # No exploding symbols - clusters stay on board
 
         return_data["totalWin"] = total_win
         self.win_data = return_data
-
-        Cluster.record_cluster_wins(self)
+        
+        # Record wins for statistics
+        for win in self.win_data["wins"]:
+            self.record({
+                "kind": win["clusterSize"],
+                "symbol": win["symbol"],
+                "mult": int(win["meta"]["globalMult"]),
+                "gametype": self.gametype,
+            })
+        
         self.win_manager.update_spinwin(self.win_data["totalWin"])
-        self.win_manager.tumble_win = self.win_data["totalWin"]
+        
+        # Emit win events if there are any wins
+        if self.win_data["totalWin"] > 0:
+            win_info_event(self, include_padding_index=False)

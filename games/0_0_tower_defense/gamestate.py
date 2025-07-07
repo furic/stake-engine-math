@@ -3,7 +3,7 @@ from src.calculations.cluster import Cluster
 
 
 class GameState(GameStateOverride):
-    """Gamestate for a single spin"""
+    """Gamestate for a single spin - simplified cluster game without tumbling"""
 
     def run_spin(self, sim: int):
         self.reset_seed(sim)
@@ -13,13 +13,8 @@ class GameState(GameStateOverride):
             self.draw_board()
 
             self.get_clusters_update_wins()
-            self.emit_tumble_win_events()  # Transmit win information
+            # No tumbling - symbols stay on board after winning
 
-            while self.win_data["totalWin"] > 0 and not (self.wincap_triggered):
-                self.tumble_game_board()
-                self.get_clusters_update_wins()
-
-            self.set_end_tumble_event()
             self.win_manager.update_gametype_wins(self.gametype)
 
             if self.check_fs_condition() and self.check_freespin_entry():
@@ -33,19 +28,12 @@ class GameState(GameStateOverride):
     def run_freespin(self):
         self.reset_fs_spin()
         while self.fs < self.tot_fs:
-            # Resets global multiplier at each spin
             self.update_freespin()
             self.draw_board()
 
             self.get_clusters_update_wins()
-            self.emit_tumble_win_events()  # Transmit win information
+            # No tumbling in free spins either - just cluster detection
 
-            while self.win_data["totalWin"] > 0 and not (self.wincap_triggered):
-                self.tumble_game_board()
-                self.update_global_mult()  # Special mechanic - increase multiplier with every tumble
-                self.get_clusters_update_wins()
-
-            self.set_end_tumble_event()
             self.win_manager.update_gametype_wins(self.gametype)
 
             if self.check_fs_condition():
