@@ -58,7 +58,7 @@ class GameConfig(Config):
         self.paytable = self.convert_range_table(pay_group)
 
         self.include_padding = False
-        self.special_symbols = {"wild": ["W"], "scatter": ["S"], "multiplier": ["M"]}
+        self.special_symbols = {"wild": ["W"], "scatter": ["S"]}
 
         self.freespin_triggers = {
             self.basegame_type: {
@@ -93,8 +93,7 @@ class GameConfig(Config):
         for r, f in reels.items():
             self.reels[r] = self.read_reels_csv(os.path.join(self.reels_path, f))
 
-        self.padding_reels[self.basegame_type] = self.reels["BR0"]
-        self.padding_reels[self.freegame_type] = self.reels["FR0"]
+        # Padding reels removed - include_padding = False, so they're not used
         self.bet_modes = [
             BetMode(
                 name="base",
