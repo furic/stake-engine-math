@@ -6,6 +6,7 @@ from copy import copy
 
 from game_calculations import GameCalculations
 from src.calculations.scatter import Scatter
+from src.calculations.cluster import Cluster
 from game_events import send_mult_info_event
 from src.events.events import (
     set_win_event,
@@ -69,3 +70,51 @@ class GameExecutables(GameCalculations):
         self.win_manager.reset_spin_win()
         self.tumblewin_mult = 0
         self.win_data = {}
+
+    def get_clusters_update_wins(self):
+        """Find clusters on board and update win manager with simplified win metadata."""
+        clusters = Cluster.get_clusters(self.board, "wild")
+        return_data = {
+            "totalWin": 0,
+            "wins": [],
+        }
+
+        # Custom cluster evaluation without clusterMult and overlay
+        exploding_symbols = []
+        total_win = 0
+        for sym in clusters:
+            for cluster in clusters[sym]:
+                syms_in_cluster = len(cluster)
+                if (syms_in_cluster, sym) in self.config.paytable:
+                    sym_win = self.config.paytable[(syms_in_cluster, sym)]
+                    symwin_mult = sym_win * self.global_multiplier
+                    total_win += symwin_mult
+                    json_positions = [{"reel": p[0], "row": p[1]} for p in cluster]
+
+                    return_data["wins"] += [
+                        {
+                            "symbol": sym,
+                            "clusterSize": syms_in_cluster,
+                            "win": symwin_mult,
+                            "positions": json_positions,
+                            "meta": {
+                                "globalMult": self.global_multiplier,
+                                "winWithoutMult": sym_win,
+                            },
+                        }
+                    ]
+
+                    for positions in cluster:
+                        self.board[positions[0]][positions[1]].explode = True
+                        if {
+                            "reel": positions[0],
+                            "row": positions[1],
+                        } not in exploding_symbols:
+                            exploding_symbols.append({"reel": positions[0], "row": positions[1]})
+
+        return_data["totalWin"] = total_win
+        self.win_data = return_data
+
+        Cluster.record_cluster_wins(self)
+        self.win_manager.update_spinwin(self.win_data["totalWin"])
+        self.win_manager.tumble_win = self.win_data["totalWin"]
