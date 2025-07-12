@@ -30,3 +30,4 @@ class EventConstants(Enum):
 
     # Special symbol events
     UPDATE_GLOBAL_MULT = "updateGlobalMult"
+    UPGRADE = "upgrade"

@@ -2,45 +2,21 @@
 
 """
 
-from copy import copy
-
 from game_calculations import GameCalculations
-from src.calculations.scatter import Scatter
 from src.calculations.cluster import Cluster
-from game_events import send_mult_info_event, reveal_event
+from game_events import reveal_event
 from src.events.events import (
-    set_win_event,
-    set_total_event,
     fs_trigger_event,
-    update_tumble_win_event,
     win_info_event,
     update_global_mult_event,
     update_freespin_event,
+    upgrade_event,
+    prize_payout_event,
 )
 
 
 class GameExecutables(GameCalculations):
     """Game specific executable functions. Used for grouping commonly used/repeated applications."""
-
-    def set_end_tumble_event(self):
-        """After all tumbling events have finished, multiply tumble-win by sum of mult symbols."""
-        if self.gametype == self.config.freegame_type:  # Only multipliers in freegame
-            board_mult, mult_info = self.get_board_multipliers()
-            base_tumble_win = copy(self.win_manager.spin_win)
-            self.win_manager.set_spin_win(base_tumble_win * board_mult)
-            if self.win_manager.spin_win > 0 and len(mult_info) > 0:
-                send_mult_info_event(
-                    self,
-                    board_mult,
-                    mult_info,
-                    base_tumble_win,
-                    self.win_manager.spin_win,
-                )
-                update_tumble_win_event(self)
-
-        if self.win_manager.spin_win > 0:
-            set_win_event(self)
-        set_total_event(self)
 
     def update_freespin_amount(self, scatter_key: str = "scatter"):
         """Update current and total freespin number and emit event."""
@@ -50,16 +26,6 @@ class GameExecutables(GameCalculations):
         else:
             basegame_trigger, freegame_trigger = False, True
         fs_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
-
-    def get_scatterpays_update_wins(self):
-        """Return the board since we are assigning the 'explode' attribute."""
-        self.win_data = Scatter.get_scatterpay_wins(
-            self.config, self.board, global_multiplier=self.global_multiplier
-        )  # Evaluate wins, self.board is modified in-place
-        Scatter.record_scatter_wins(self)
-        self.win_manager.tumble_win = self.win_data["totalWin"]
-        self.win_manager.update_spinwin(self.win_data["totalWin"])  # Update wallet
-        self.emit_tumble_win_events()  # Transmit win information
 
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
@@ -123,6 +89,91 @@ class GameExecutables(GameCalculations):
         # Emit win events if there are any wins
         if self.win_data["totalWin"] > 0:
             win_info_event(self, include_padding_index=False)
+            # Generate upgrade events after win events
+            self.generate_upgrade_events()
+            # Generate prize payout events after all upgrades
+            self.generate_prize_payout_events()
+
+    def generate_upgrade_events(self):
+        """Generate upgrade events for each winning symbol."""
+        import random
+        
+        self.upgrade_positions = {}  # Track upgraded positions for prize payout
+        
+        for win in self.win_data["wins"]:
+            symbol = win["symbol"]
+            positions = win["positions"]
+            cluster_count = len(positions)
+            
+            # Only upgrade L symbols with clusters of 5 or more
+            if symbol.startswith("L") and cluster_count >= 5:
+                # Pick a random position from the winning cluster
+                random_position = random.choice(positions)
+                
+                # Generate upgrade event
+                upgrade_event(self, symbol, random_position, positions)
+                
+                # Track the upgraded symbol for prize payout
+                # Determine what symbol it was upgraded to
+                if hasattr(self.config, 'upgrade_config'):
+                    upgrade_config = self.config.upgrade_config
+                    symbol_map = upgrade_config["symbol_map"]
+                    thresholds = upgrade_config["thresholds"]
+                    
+                    if symbol in symbol_map:
+                        if cluster_count >= thresholds["high"]:
+                            upgraded_symbol = symbol_map[symbol]["H"]
+                        elif cluster_count >= thresholds["medium"]:
+                            upgraded_symbol = symbol_map[symbol]["M"]
+                        else:
+                            continue
+                        
+                        if upgraded_symbol not in self.upgrade_positions:
+                            self.upgrade_positions[upgraded_symbol] = []
+                        self.upgrade_positions[upgraded_symbol].append(random_position)
+
+    def generate_prize_payout_events(self):
+        """Generate prize payout events for M and H symbols from upgrade events."""
+        # Check if we have any upgraded positions to pay out
+        if not hasattr(self, 'upgrade_positions') or not self.upgrade_positions:
+            return
+        
+        # Check if game has prize configuration
+        if not hasattr(self.config, 'prize_config'):
+            return
+            
+        prize_config = self.config.prize_config
+        prize_paytable = prize_config["paytable"]
+        
+        total_prize_amount = 0
+        details = []
+        
+        for symbol_name, positions in self.upgrade_positions.items():
+            if symbol_name in prize_paytable:
+                count = len(positions)
+                symbol_payout = prize_paytable.get(symbol_name, 0)
+                amount = int(round(symbol_payout * count * 100, 0))
+                total_prize_amount += amount
+                
+                details.append({
+                    "symbol": symbol_name,
+                    "positions": positions,
+                    "amount": amount,
+                    "count": count,
+                    "baseAmount": amount,
+                    "multiplier": 1
+                })
+        
+        # Create the prize payout event if there are any prizes
+        if total_prize_amount > 0:
+            event = {
+                "index": len(self.book.events),
+                "type": "win",
+                "reason": "prize",
+                "total": total_prize_amount,
+                "details": details,
+            }
+            self.book.add_event(event)
 
     def draw_board(self, emit_event: bool = True, trigger_symbol: str = "scatter") -> None:
         """Override to use custom reveal_event without paddingPositions and anticipation."""

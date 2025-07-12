@@ -98,6 +98,42 @@ class GameConfig(Config):
         }
         self.paytable = self.convert_range_table(pay_group)
 
+        # Upgrade System Configuration
+        self.upgrade_config = {
+            "symbol_map": {
+                "L1": {"M": "M1", "H": "H1"},
+                "L2": {"M": "M2", "H": "H2"},
+                "L3": {"M": "M3", "H": "H3"},
+                "L4": {"M": "M4", "H": "H4"},
+                "L5": {"M": "M5", "H": "H5"},
+            },
+            "thresholds": {
+                "medium": 5,  # 5-9 clusters upgrade to M symbols
+                "high": 10,   # 10+ clusters upgrade to H symbols
+            }
+        }
+
+        # Prize Symbol Payout Configuration
+        # M and H symbols pay fixed amounts based on count on board
+        self.prize_config = {
+            "symbols": ["M1", "M2", "M3", "M4", "M5", "H1", "H2", "H3", "H4", "H5"],
+            "paytable": {
+                # M symbols (Medium tier) - 2x base value of corresponding L symbol
+                "M1": 2.0,   # 2x multiplier
+                "M2": 1.0,   # 2x multiplier  
+                "M3": 0.4,   # 2x multiplier
+                "M4": 0.2,   # 2x multiplier
+                "M5": 0.1,   # 2x multiplier
+                
+                # H symbols (High tier) - 5x base value of corresponding L symbol
+                "H1": 5.0,   # 5x multiplier
+                "H2": 2.5,   # 5x multiplier
+                "H3": 1.0,   # 5x multiplier
+                "H4": 0.5,   # 5x multiplier
+                "H5": 0.25,  # 5x multiplier
+            }
+        }
+
         self.include_padding = False
         self.special_symbols = {"wild": ["W"], "scatter": ["S"]}
 

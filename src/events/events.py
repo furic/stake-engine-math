@@ -269,6 +269,40 @@ def tumble_board_event(gamestate):
     gamestate.book.add_event(event)
 
 
+def upgrade_event(gamestate, win_symbol: str, upgrade_position: dict, from_positions: list) -> None:
+    """Generate upgrade event for a winning symbol."""
+    # Check if game has upgrade configuration
+    if not hasattr(gamestate.config, 'upgrade_config'):
+        return
+    
+    upgrade_config = gamestate.config.upgrade_config
+    symbol_map = upgrade_config["symbol_map"]
+    thresholds = upgrade_config["thresholds"]
+    
+    # Check if symbol can be upgraded
+    if win_symbol not in symbol_map:
+        return
+    
+    # Determine upgrade target based on cluster count
+    cluster_count = len(from_positions)
+    if cluster_count >= thresholds["high"]:
+        upgrade_target = symbol_map[win_symbol]["H"]
+    elif cluster_count >= thresholds["medium"]:
+        upgrade_target = symbol_map[win_symbol]["M"]
+    else:
+        # No upgrade for clusters smaller than medium threshold
+        return
+    
+    event = {
+        "index": len(gamestate.book.events),
+        "type": EventConstants.UPGRADE.value,
+        "symbol": {"name": upgrade_target},
+        "position": upgrade_position,
+        "fromPositions": from_positions,
+    }
+    gamestate.book.add_event(event)
+
+
 def enter_bonus_event(gamestate) -> None:
     "Indicate feature game entry explicitly."
     event = {
@@ -277,3 +311,58 @@ def enter_bonus_event(gamestate) -> None:
         "reason": gamestate.bonus_type,
     }
     gamestate.book.add_event(event)
+
+
+def prize_payout_event(gamestate, include_padding_index=True) -> None:
+    """Generate prize payout events for M and H symbols on the board."""
+    # Check if game has prize configuration
+    if not hasattr(gamestate.config, 'prize_config'):
+        return
+    
+    prize_config = gamestate.config.prize_config
+    prize_symbols = prize_config["symbols"]
+    prize_paytable = prize_config["paytable"]
+    
+    # Find all prize symbols on the board
+    prize_positions = {}
+    
+    for reel_idx, reel in enumerate(gamestate.board):
+        for row_idx, symbol in enumerate(reel):
+            if symbol.name in prize_symbols:
+                if symbol.name not in prize_positions:
+                    prize_positions[symbol.name] = []
+                
+                position = {"reel": reel_idx, "row": row_idx}
+                if include_padding_index:
+                    position["row"] += 1
+                prize_positions[symbol.name].append(position)
+    
+    # Generate prize payout events if any prize symbols found
+    if prize_positions:
+        total_prize_amount = 0
+        details = []
+        
+        for symbol_name, positions in prize_positions.items():
+            count = len(positions)
+            symbol_payout = prize_paytable.get(symbol_name, 0)
+            amount = int(round(symbol_payout * count * 100, 0))
+            total_prize_amount += amount
+            
+            details.append({
+                "symbol": symbol_name,
+                "positions": positions,
+                "amount": amount,
+                "count": count,
+                "baseAmount": amount,
+                "multiplier": 1
+            })
+        
+        # Create the prize payout event
+        event = {
+            "index": len(gamestate.book.events),
+            "type": EventConstants.WIN_DATA.value,
+            "reason": "prize",
+            "total": total_prize_amount,
+            "details": details,
+        }
+        gamestate.book.add_event(event)
