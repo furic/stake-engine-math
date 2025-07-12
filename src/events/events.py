@@ -139,8 +139,8 @@ def win_info_event(gamestate, include_padding_index=True):
     include_padding_index: starts winning-symbol positions at row=1, to account for top/bottom symbol inclusion in board
     """
     win_data_copy = {}
-    win_data_copy["wins"] = deepcopy(gamestate.win_data["wins"])
-    for idx, w in enumerate(win_data_copy["wins"]):
+    win_data_copy["details"] = deepcopy(gamestate.win_data["wins"])
+    for idx, w in enumerate(win_data_copy["details"]):
         if include_padding_index:
             new_positions = []
             for p in w["positions"]:
@@ -148,27 +148,42 @@ def win_info_event(gamestate, include_padding_index=True):
         else:
             new_positions = w["positions"]
 
-        win_data_copy["wins"][idx]["win"] = int(
-            round(min(win_data_copy["wins"][idx]["win"], gamestate.config.wincap) * 100, 0)
+        win_data_copy["details"][idx]["amount"] = int(
+            round(min(win_data_copy["details"][idx]["win"], gamestate.config.wincap) * 100, 0)
         )
-        win_data_copy["wins"][idx]["positions"] = new_positions
-        if "meta" in win_data_copy["wins"][idx]:
-            win_data_copy["wins"][idx]["meta"]["winWithoutMult"] = int(
+        win_data_copy["details"][idx]["positions"] = new_positions
+        win_data_copy["details"][idx]["count"] = win_data_copy["details"][idx]["clusterSize"]
+        
+        # Remove old field names
+        del win_data_copy["details"][idx]["win"]
+        del win_data_copy["details"][idx]["clusterSize"]
+        
+        if "meta" in win_data_copy["details"][idx]:
+            win_data_copy["details"][idx]["baseAmount"] = int(
                 int(
                     min(
-                        win_data_copy["wins"][idx]["meta"]["winWithoutMult"] * 100,
+                        win_data_copy["details"][idx]["meta"]["winWithoutMult"] * 100,
                         gamestate.config.wincap * 100,
                     ),
                 )
             )
-            if "overlay" in win_data_copy["wins"][idx]["meta"] and include_padding_index:
-                win_data_copy["wins"][idx]["meta"]["overlay"]["row"] += 1
+            win_data_copy["details"][idx]["multiplier"] = win_data_copy["details"][idx]["meta"]["globalMult"]
+            
+            # Handle overlay if present
+            if "overlay" in win_data_copy["details"][idx]["meta"] and include_padding_index:
+                overlay_data = win_data_copy["details"][idx]["meta"]["overlay"]
+                overlay_data["row"] += 1
+                win_data_copy["details"][idx]["overlay"] = overlay_data
+            
+            # Remove old meta structure
+            del win_data_copy["details"][idx]["meta"]
 
     event = {
         "index": len(gamestate.book.events),
         "type": EventConstants.WIN_DATA.value,
-        "totalWin": int(round(min(gamestate.win_data["totalWin"], gamestate.config.wincap) * 100, 0)),
-        "wins": win_data_copy["wins"],
+        "reason": "cluster",
+        "total": int(round(min(gamestate.win_data["totalWin"], gamestate.config.wincap) * 100, 0)),
+        "details": win_data_copy["details"],
     }
     gamestate.book.add_event(event)
 

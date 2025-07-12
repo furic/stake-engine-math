@@ -10,17 +10,17 @@ class EventConstants(Enum):
     REVEAL = "reveal"
 
     # Win events
-    WIN_DATA = "winInfo"
-    FINAL_WIN = "finalWin"
+    WIN_DATA = "win"
+    FINAL_WIN = "setFinalWin"
     SET_WIN = "setWin"
     SET_TOTAL_WIN = "setTotalWin"
-    WINCAP = "wincap"
+    WINCAP = "winCap"
 
     # Freespin events
     UPDATE_FS = "updateFreeSpin"
-    FREESPINTRIGGER = "freeSpinTrigger"
-    FREESPINRETRIGGER = "freeSpinRetrigger"
-    FREE_SPIN_END = "freeSpinEnd"
+    FREESPINTRIGGER = "triggerFreeSpin"
+    FREESPINRETRIGGER = "retriggerFreeSpin"
+    FREE_SPIN_END = "endFreeSpin"
     ENTER_BONUS = "enterBonus"
 
     # Tumble events

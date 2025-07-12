@@ -36,11 +36,11 @@ def analyze_wins(filename):
             for game in games:
                 if 'events' in game:
                     for event in game['events']:
-                        if event.get('type') == 'winInfo' and 'wins' in event:
-                            for win in event['wins']:
+                        if event.get('type') == 'win' and 'details' in event:
+                            for win in event['details']:
                                 symbol = win.get('symbol', 'unknown')
-                                cluster_size = win.get('clusterSize', 0)
-                                win_amount = win.get('win', 0)
+                                cluster_size = win.get('count', 0)
+                                win_amount = win.get('amount', 0)
                                 
                                 symbol_wins[symbol] += 1
                                 total_wins += 1
