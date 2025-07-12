@@ -97,6 +97,26 @@ class GameConfig(Config):
             (c15, "L5"): 3.5,  # 15+ cluster
         }
         self.paytable = self.convert_range_table(pay_group)
+        
+        # Add M and H symbols to paytable so they can be registered
+        # These symbols pay fixed amounts based on the prize_config
+        m_h_symbols = {
+            # M symbols (Medium tier)
+            ((1, 1), "M1"): 2.0,
+            ((1, 1), "M2"): 1.0,
+            ((1, 1), "M3"): 0.4,
+            ((1, 1), "M4"): 0.2,
+            ((1, 1), "M5"): 0.1,
+            
+            # H symbols (High tier)
+            ((1, 1), "H1"): 5.0,
+            ((1, 1), "H2"): 2.5,
+            ((1, 1), "H3"): 1.0,
+            ((1, 1), "H4"): 0.5,
+            ((1, 1), "H5"): 0.25,
+        }
+        # Add the M and H symbols to the main paytable
+        self.paytable.update(m_h_symbols)
 
         # Upgrade System Configuration
         self.upgrade_config = {

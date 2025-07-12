@@ -18,6 +18,9 @@ class GameStateOverride(GameExecutables):
     def reset_fs_spin(self):
         super().reset_fs_spin()
         self.global_multiplier = 1
+        # Initialize sticky symbols tracking for free spins, but don't overwrite existing ones
+        if not hasattr(self, 'sticky_symbols'):
+            self.initialize_sticky_symbols()
 
     def assign_special_sym_function(self):
         self.special_symbol_functions = {"M": [self.assign_mult_property]}

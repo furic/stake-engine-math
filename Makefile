@@ -6,7 +6,18 @@ else
 	VENV_PY = ./env/bin/python3
 endif 
 
-.PHONY: setup run test clean 
+.PHONY: setup run test unittest help clean
+
+help:
+	@echo "Available commands:"
+	@echo "  make setup                     - Set up virtual environment and install dependencies"
+	@echo "  make run GAME=<game_name>      - Run a specific game (e.g., make run GAME=0_0_tower_defense)"
+	@echo "  make test                      - Run main project tests"
+	@echo "  make unittest GAME=<game_name> - Run all unit tests for a specific game"
+	@echo "  make clean                     - Clean up build artifacts"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make unittest GAME=0_0_tower_defense" 
 
 makeVirtual:
 	$(PYTHON) -m venv env 
@@ -35,6 +46,11 @@ run GAME:
 test:
 	cd $(CURDIR)
 	pytest tests/
+
+# Game-specific unit tests - usage: make unittest GAME=0_0_tower_defense
+# Runs all unit tests for the specified game
+unittest GAME:
+	cd games/$(GAME) && ../../$(VENV_PY) tests/run_tests.py
 
 clean:
 	rm -rf env __pycache__ *.pyc
