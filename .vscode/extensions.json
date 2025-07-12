@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "ms-vscode.makefile-tools"
+    ],
+    "unwantedRecommendations": [
+        "svelte.svelte-vscode",
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "csstools.postcss",
+        "pranaygp.vscode-css-peek",
+        "rvest.vs-code-prettier-eslint",
+        "formulahendry.auto-rename-tag"
+    ]
+}

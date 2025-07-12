@@ -31,29 +31,70 @@ class GameConfig(Config):
         # Game Dimensions
         self.num_reels = 5
         self.num_rows = [5] * self.num_reels  # Optionally include variable number of rows per reel
-        # Board and Symbol Properties - Cluster Pay (optimized for performance)
+        # Board and Symbol Properties - Cluster Pay (Low symbols only)
         # Format: ((min_cluster, max_cluster), "symbol"): payout_multiplier
-        # Reduced to 3-7 cluster sizes for better performance
-        t1, t2, t3 = (3, 4), (5, 6), (7, 8)
+        # Extended cluster sizes for more diverse gameplay
+        c5, c6, c8, c9, c10, c11, c12, c13, c14, c15 = (5, 5), (6, 6), (8, 8), (9, 9), (10, 10), (11, 11), (12, 12), (13, 13), (14, 14), (15, 25)
         pay_group = {
-            (t1, "H1"): 1.0,
-            (t2, "H1"): 3.0,
-            (t3, "H1"): 7.5,
-            (t1, "H2"): 0.8,
-            (t2, "H2"): 2.0,
-            (t3, "H2"): 5.0,
-            (t1, "H3"): 0.6,
-            (t2, "H3"): 1.3,
-            (t3, "H3"): 3.2,
-            (t1, "L1"): 0.4,
-            (t2, "L1"): 0.6,
-            (t3, "L1"): 1.5,
-            (t1, "L2"): 0.3,
-            (t2, "L2"): 0.4,
-            (t3, "L2"): 1.2,
-            (t1, "L3"): 0.2,
-            (t2, "L3"): 0.2,
-            (t3, "L3"): 0.8,
+            # L1 - HIGHEST PAYING (Premium Symbol)
+            (c5, "L1"): 1.0,   # 5 cluster
+            (c6, "L1"): 2.0,   # 6 cluster
+            (c8, "L1"): 4.0,   # 8 cluster
+            (c9, "L1"): 6.0,   # 9 cluster
+            (c10, "L1"): 9.0,   # 10 cluster
+            (c11, "L1"): 12.5,  # 11 cluster
+            (c12, "L1"): 17.5,  # 12 cluster
+            (c13, "L1"): 25.0,  # 13 cluster
+            (c14, "L1"): 37.5,  # 14 cluster
+            (c15, "L1"): 60.0, # 15+ cluster
+            
+            # L2 - HIGH PAYING
+            (c5, "L2"): 0.5,   # 5 cluster
+            (c6, "L2"): 1.0,   # 6 cluster
+            (c8, "L2"): 2.0,   # 8 cluster
+            (c9, "L2"): 3.0,   # 9 cluster
+            (c10, "L2"): 4.5,   # 10 cluster
+            (c11, "L2"): 6.3,   # 11 cluster
+            (c12, "L2"): 8.8,   # 12 cluster
+            (c13, "L2"): 12.5,  # 13 cluster
+            (c14, "L2"): 18.8,  # 14 cluster
+            (c15, "L2"): 30.0, # 15+ cluster
+            
+            # L3 - MEDIUM PAYING
+            (c5, "L3"): 0.2,   # 5 cluster
+            (c6, "L3"): 0.4,   # 6 cluster
+            (c8, "L3"): 0.8,   # 8 cluster
+            (c9, "L3"): 1.2,   # 9 cluster
+            (c10, "L3"): 1.8,   # 10 cluster
+            (c11, "L3"): 2.5,   # 11 cluster
+            (c12, "L3"): 3.5,   # 12 cluster
+            (c13, "L3"): 5.0,   # 13 cluster
+            (c14, "L3"): 7.5,   # 14 cluster
+            (c15, "L3"): 12.0, # 15+ cluster
+            
+            # L4 - LOW PAYING
+            (c5, "L4"): 0.1,   # 5 cluster
+            (c6, "L4"): 0.2,   # 6 cluster
+            (c8, "L4"): 0.4,   # 8 cluster
+            (c9, "L4"): 0.6,   # 9 cluster
+            (c10, "L4"): 0.9,   # 10 cluster
+            (c11, "L4"): 1.3,   # 11 cluster
+            (c12, "L4"): 1.8,   # 12 cluster
+            (c13, "L4"): 2.5,   # 13 cluster
+            (c14, "L4"): 3.8,   # 14 cluster
+            (c15, "L4"): 6.0,  # 15+ cluster
+            
+            # L5 - LOWEST PAYING
+            (c5, "L5"): 0.05,  # 5 cluster
+            (c6, "L5"): 0.1,   # 6 cluster
+            (c8, "L5"): 0.2,   # 8 cluster
+            (c9, "L5"): 0.3,   # 9 cluster
+            (c10, "L5"): 0.5,   # 10 cluster
+            (c11, "L5"): 0.7,   # 11 cluster
+            (c12, "L5"): 1.0,   # 12 cluster
+            (c13, "L5"): 1.5,   # 13 cluster
+            (c14, "L5"): 2.2,   # 14 cluster
+            (c15, "L5"): 3.5,  # 15+ cluster
         }
         self.paytable = self.convert_range_table(pay_group)
 
