@@ -67,7 +67,8 @@ class GameExecutables(GameCalculations):
         update_freespin_event(self)
         # This game does not reset the global multiplier on each spin
         self.global_multiplier = 1
-        update_global_mult_event(self)
+        # Skip updateGlobalMult for tower defense game (will be added back in "super" mode later)
+        # update_global_mult_event(self)
         self.win_manager.reset_spin_win()
         self.tumblewin_mult = 0
         self.win_data = {}
