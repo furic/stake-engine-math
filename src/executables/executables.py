@@ -1,14 +1,14 @@
 from src.state.state_conditions import Conditions
 from src.calculations.tumble import Tumble
 from src.events.events import (
-    win_info_event,
-    freespin_end_event,
-    tumble_board_event,
+    record_win_event,
+    end_freespin_event,
+    generate_tumble_board_event,
     update_tumble_win_event,
-    wincap_event,
-    fs_trigger_event,
+    trigger_win_cap_event,
+    trigger_freespin_event,
     update_freespin_event,
-    final_win_event,
+    finalize_win_event,
     update_global_mult_event,
 )
 
@@ -23,12 +23,12 @@ class Executables(Conditions, Tumble):
     def tumble_game_board(self):
         "Remove winning symbols from active board and replace."
         self.tumble_board()
-        tumble_board_event(self)
+        generate_tumble_board_event(self)
 
     def emit_tumble_win_events(self) -> None:
         """Transmit win and new board information upon tumble."""
         if self.win_data["totalWin"] > 0:
-            win_info_event(self)
+            record_win_event(self)
             update_tumble_win_event(self)
             self.evaluate_wincap()
 
@@ -36,7 +36,7 @@ class Executables(Conditions, Tumble):
         """Indicate spin functions should stop once wincap is reached."""
         if self.win_manager.running_bet_win >= self.config.wincap and not (self.wincap_triggered):
             self.wincap_triggered = True
-            wincap_event(self)
+            trigger_win_cap_event(self)
             return True
         return False
 
@@ -76,12 +76,12 @@ class Executables(Conditions, Tumble):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        fs_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        trigger_freespin_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def update_fs_retrigger_amt(self, scatter_key: str = "scatter") -> None:
         """Update total freespin amount on retrigger."""
         self.tot_fs += self.config.freespin_triggers[self.gametype][self.count_special_symbols(scatter_key)]
-        fs_trigger_event(self, freegame_trigger=True, basegame_trigger=False)
+        trigger_freespin_event(self, freegame_trigger=True, basegame_trigger=False)
 
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
@@ -92,12 +92,12 @@ class Executables(Conditions, Tumble):
 
     def end_freespin(self) -> None:
         """Transmit total amount awarded during freegame."""
-        freespin_end_event(self)
+        end_freespin_event(self)
 
     def evaluate_finalwin(self) -> None:
         """Check base and freespin sums, set payout multiplier."""
         self.update_final_win()
-        final_win_event(self)
+        finalize_win_event(self)
 
     def update_global_mult(self) -> None:
         """Increment multiplier value and emit corresponding event."""

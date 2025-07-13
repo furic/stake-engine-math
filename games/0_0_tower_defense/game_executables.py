@@ -6,8 +6,8 @@ from game_calculations import GameCalculations
 from src.calculations.cluster import Cluster
 from game_events import reveal_event
 from src.events.events import (
-    fs_trigger_event,
-    win_info_event,
+    freespin_trigger_event,
+    win_event,
     update_global_mult_event,
     update_freespin_event,
     upgrade_event,
@@ -25,7 +25,7 @@ class GameExecutables(GameCalculations):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        fs_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        freespin_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
@@ -93,7 +93,7 @@ class GameExecutables(GameCalculations):
         
         # Emit win events if there are any wins
         if self.win_data["totalWin"] > 0:
-            win_info_event(self, include_padding_index=False)
+            win_event(self, include_padding_index=False)
             # Generate upgrade events after win events
             self.generate_upgrade_events()
             

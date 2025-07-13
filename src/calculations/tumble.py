@@ -1,5 +1,5 @@
 from copy import copy
-from src.events.events import set_win_event, set_total_event
+from src.events.events import update_win_event, update_total_event
 from src.calculations.board import Board
 
 
@@ -50,5 +50,5 @@ class Tumble(Board):
     def set_end_tumble_event(self) -> None:
         """Emit wins related to latest cumulative tumble sequence."""
         if self.win_manager.spin_win > 0:
-            set_win_event(self)
-        set_total_event(self)
+            update_win_event(self)
+        update_total_event(self)

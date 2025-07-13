@@ -3,7 +3,7 @@
 from game_override import GameStateOverride
 from game_events import win_info_prize_event, new_sticky_event
 from src.calculations.lines import Lines
-from src.events.events import update_freespin_event, reveal_event, set_total_event, set_win_event
+from src.events.events import update_freespin_event, reveal_event, update_total_event, update_win_event
 from game_events import new_expanding_wild_event, update_expanding_wild_event, reveal_prize_event
 from src.calculations.statistics import get_random_outcome
 
@@ -102,7 +102,7 @@ class GameState(GameStateOverride):
         if self.win_manager.spin_win > 0:
             win_info_prize_event(self)
             self.evaluate_wincap()
-            set_win_event(self)
-        set_total_event(self)
+            update_win_event(self)
+        update_total_event(self)
 
         self.evaluate_finalwin()
