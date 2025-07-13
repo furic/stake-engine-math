@@ -157,14 +157,40 @@ def output_lookup_and_force_files(
 
         os.remove(temp_book_output_path)
     else:
+        # For uncompressed files, we need to properly merge JSON arrays
+        all_books = []
+        for filename in file_list:
+            with open(filename, "r", encoding="UTF-8") as infile:
+                content = infile.read().strip()
+                if content:
+                    try:
+                        # Each temp file should be a JSON array
+                        books = json.loads(content)
+                        if isinstance(books, list):
+                            all_books.extend(books)
+                        else:
+                            # If it's a single object, wrap it in a list
+                            all_books.append(books)
+                    except json.JSONDecodeError as e:
+                        print(f"Warning: Failed to parse temp file {filename}: {e}")
+                        # Try to handle JSONL format as fallback
+                        lines = content.split('\n')
+                        for line in lines:
+                            line = line.strip()
+                            if line:
+                                try:
+                                    book = json.loads(line)
+                                    all_books.append(book)
+                                except json.JSONDecodeError:
+                                    print(f"Warning: Failed to parse line in {filename}: {line[:100]}...")
+        
+        # Write the properly merged JSON array
         with open(
             gamestate.output_files.get_final_book_name(betmode, False),
             "w",
             encoding="UTF-8",
         ) as outfile:
-            for filename in file_list:
-                with open(filename, "r", encoding="UTF-8") as infile:
-                    outfile.write(infile.read())
+            json.dump(all_books, outfile)
 
     print("Saving force files for", game_id, "in", betmode)
     force_results_dict = {}

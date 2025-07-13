@@ -4,9 +4,9 @@ from src.calculations.symbol import Symbol
 from src.config.config import Config
 from src.wins.multiplier_strategy import apply_mult
 from src.events.events import (
-    record_win_event,
-    update_win_event,
-    update_total_event,
+    win_event,
+    set_win_event,
+    set_total_win_event,
 )
 
 
@@ -121,10 +121,10 @@ class Lines:
     def emit_linewin_events(gamestate) -> None:
         """Transmit win events asociated with lines wins."""
         if gamestate.win_manager.spin_win > 0:
-            record_win_event(gamestate)
+            win_event(gamestate)
             gamestate.evaluate_wincap()
-            update_win_event(gamestate)
-        update_total_event(gamestate)
+            set_win_event(gamestate)
+        set_total_win_event(gamestate)
 
     @staticmethod
     def record_lines_wins(gamestate) -> None:

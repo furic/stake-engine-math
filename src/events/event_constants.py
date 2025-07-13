@@ -10,7 +10,7 @@ class EventConstants(Enum):
     REVEAL = "reveal"
 
     # Win events
-    WIN_DATA = "win"
+    WIN = "win"
     SET_FINAL_WIN = "setFinalWin"
     SET_WIN = "setWin"
     SET_TOTAL_WIN = "setTotalWin"
@@ -21,7 +21,6 @@ class EventConstants(Enum):
     TRIGGER_FREE_SPIN = "triggerFreeSpin"
     RETRIGGER_FREE_SPIN = "retriggerFreeSpin"
     END_FREE_SPIN = "endFreeSpin"
-    ENTER_BONUS = "enterBonus"
 
     # Tumble events
     TUMBLE_BOARD = "tumbleBoard"

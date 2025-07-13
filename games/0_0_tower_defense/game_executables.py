@@ -6,10 +6,10 @@ from game_calculations import GameCalculations
 from src.calculations.cluster import Cluster
 from game_events import reveal_event
 from src.events.events import (
-    freespin_trigger_event,
+    trigger_free_spin_event,
     win_event,
     update_global_mult_event,
-    update_freespin_event,
+    update_free_spin_event,
     upgrade_event,
     prize_payout_event,
 )
@@ -25,7 +25,7 @@ class GameExecutables(GameCalculations):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        freespin_trigger_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        trigger_free_spin_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
@@ -35,7 +35,7 @@ class GameExecutables(GameCalculations):
         if self.fs == 1 and not hasattr(self, 'sticky_symbols'):
             self.initialize_sticky_symbols()
         
-        update_freespin_event(self)
+        update_free_spin_event(self)
         # This game does not reset the global multiplier on each spin
         self.global_multiplier = 1
         # Skip updateGlobalMult for tower defense game (will be added back in "super" mode later)
@@ -141,59 +141,8 @@ class GameExecutables(GameCalculations):
 
     def generate_prize_payout_events(self):
         """Generate prize payout events for M and H symbols currently on the board."""
-        # Check if game has prize configuration
-        if not hasattr(self.config, 'prize_config'):
-            return
-            
-        prize_config = self.config.prize_config
-        prize_symbols = prize_config["symbols"]
-        prize_paytable = prize_config["paytable"]
-        
-        # Scan the board for M and H symbols
-        board_symbols = {}
-        for reel in range(len(self.board)):
-            for row in range(len(self.board[reel])):
-                symbol_name = self.board[reel][row].name
-                if symbol_name in prize_symbols:
-                    if symbol_name not in board_symbols:
-                        board_symbols[symbol_name] = []
-                    board_symbols[symbol_name].append({"reel": reel, "row": row})
-        
-        # Generate prize payout if we have M or H symbols
-        if board_symbols:
-            total_prize_amount = 0
-            details = []
-            
-            for symbol_name, positions in board_symbols.items():
-                if symbol_name in prize_paytable:
-                    count = len(positions)
-                    symbol_payout = prize_paytable.get(symbol_name, 0)
-                    amount = int(round(symbol_payout * count * 100, 0))
-                    total_prize_amount += amount
-                    
-                    details.append({
-                        "symbol": symbol_name,
-                        "positions": positions,
-                        "amount": amount,
-                        "count": count,
-                        "baseAmount": amount,
-                        "multiplier": 1
-                    })
-            
-            # Create the prize payout event if there are any prizes
-            if total_prize_amount > 0:
-                event = {
-                    "index": len(self.book.events),
-                    "type": "win",
-                    "reason": "prize",
-                    "total": total_prize_amount,
-                    "details": details,
-                }
-                self.book.add_event(event)
-                
-                # Update win manager with the prize amount
-                prize_win_amount = total_prize_amount / 100.0  # Convert back to float
-                self.win_manager.update_spinwin(prize_win_amount)
+        # Use the standardized prize payout event function
+        prize_payout_event(self)
 
     def draw_board(self, emit_event: bool = True, trigger_symbol: str = "scatter") -> None:
         """Override to handle sticky symbols and use custom reveal_event."""

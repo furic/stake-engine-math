@@ -42,7 +42,7 @@ def reveal_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def trigger_freespin_event(
+def trigger_free_spin_event(
     gamestate,
     include_padding_index=True,
     basegame_trigger: bool = None,
@@ -77,7 +77,7 @@ def trigger_freespin_event(
     gamestate.book.add_event(event)
 
 
-def update_win_event(gamestate, winlevel_key: str = "standard"):
+def set_win_event(gamestate, winlevel_key: str = "standard"):
     """Used for updating cumulative win ticker (for a single outcome)."""
     if not gamestate.wincap_triggered:
         event = {
@@ -94,7 +94,7 @@ def update_win_event(gamestate, winlevel_key: str = "standard"):
         gamestate.book.add_event(event)
 
 
-def update_total_event(gamestate):
+def set_total_win_event(gamestate):
     """Updates win amount for a betting round (including cumulative wins across multiple freespin wins)."""
     event = {
         "index": len(gamestate.book.events),
@@ -109,7 +109,7 @@ def update_total_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def update_tumble_event(gamestate):
+def set_tumble_win_event(gamestate):
     """Update banner indicating wins from successive tumbles."""
     event = {
         "index": len(gamestate.book.events),
@@ -119,7 +119,7 @@ def update_tumble_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def trigger_win_cap_event(gamestate):
+def win_cap_event(gamestate):
     """Emit to indicate end of spin actions."""
     event = {
         "index": len(gamestate.book.events),
@@ -134,7 +134,7 @@ def trigger_win_cap_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def record_win_event(gamestate, include_padding_index=True):
+def win_event(gamestate, include_padding_index=True):
     """
     include_padding_index: starts winning-symbol positions at row=1, to account for top/bottom symbol inclusion in board
     """
@@ -180,7 +180,7 @@ def record_win_event(gamestate, include_padding_index=True):
 
     event = {
         "index": len(gamestate.book.events),
-        "type": EventConstants.WIN_DATA.value,
+        "type": EventConstants.WIN.value,
         "reason": "cluster",
         "amount": int(round(min(gamestate.win_data["totalWin"], gamestate.config.wincap) * 100, 0)),
         "totalAmount": int(
@@ -204,27 +204,29 @@ def update_tumble_win_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def update_freespin_event(gamestate):
+def update_free_spin_event(gamestate):
     """Update the current spin number and total freegame"""
     event = {
-        "index": len(gamestate.book.events),            "type": EventConstants.UPDATE_FREE_SPIN.value,
+        "index": len(gamestate.book.events),
+        "type": EventConstants.UPDATE_FREE_SPIN.value,
         "amount": int(gamestate.fs),
         "total": int(gamestate.tot_fs),
     }
     gamestate.book.add_event(event)
 
 
-def end_freespin_event(gamestate, winlevel_key="endFeature"):
+def end_free_spin_event(gamestate, winlevel_key="endFeature"):
     """End of feature trigger."""
     event = {
-        "index": len(gamestate.book.events),            "type": EventConstants.END_FREE_SPIN.value,
+        "index": len(gamestate.book.events),
+        "type": EventConstants.END_FREE_SPIN.value,
         "amount": int(min(gamestate.win_manager.freegame_wins, gamestate.config.wincap) * 100),
         "winLevel": gamestate.config.get_win_level(gamestate.win_manager.freegame_wins, winlevel_key),
     }
     gamestate.book.add_event(event)
 
 
-def finalize_win_event(gamestate):
+def set_final_win_event(gamestate):
     """Assigns final payout multiplier for a simulation."""
     event = {
         "index": len(gamestate.book.events),            "type": EventConstants.SET_FINAL_WIN.value,
@@ -244,7 +246,7 @@ def update_global_mult_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def generate_tumble_board_event(gamestate):
+def tumble_board_event(gamestate):
     """States the symbol positions removed from a board during tumble, and which new symbols should take their place."""
     special_attributes = list(gamestate.config.special_symbols.keys())
 
@@ -272,7 +274,7 @@ def generate_tumble_board_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def generate_upgrade_event(gamestate, win_symbol: str, upgrade_position: dict, from_positions: list) -> None:
+def upgrade_event(gamestate, win_symbol: str, upgrade_position: dict, from_positions: list) -> None:
     """Generate upgrade event for a winning symbol."""
     # Check if game has upgrade configuration
     if not hasattr(gamestate.config, 'upgrade_config'):
@@ -305,18 +307,7 @@ def generate_upgrade_event(gamestate, win_symbol: str, upgrade_position: dict, f
     }
     gamestate.book.add_event(event)
 
-
-def trigger_bonus_entry_event(gamestate) -> None:
-    "Indicate feature game entry explicitly."
-    event = {
-        "index": len(gamestate.book.events),
-        "type": EventConstants.ENTER_BONUS.value,
-        "reason": gamestate.bonus_type,
-    }
-    gamestate.book.add_event(event)
-
-
-def generate_prize_payout_event(gamestate, include_padding_index=True) -> None:
+def prize_payout_event(gamestate, include_padding_index=True) -> None:
     """Generate prize payout events for M and H symbols on the board."""
     # Check if game has prize configuration
     if not hasattr(gamestate.config, 'prize_config'):
@@ -363,7 +354,7 @@ def generate_prize_payout_event(gamestate, include_padding_index=True) -> None:
         # Create the prize payout event
         event = {
             "index": len(gamestate.book.events),
-            "type": EventConstants.WIN_DATA.value,
+            "type": EventConstants.WIN.value,
             "reason": "prize",
             "amount": total_prize_amount,
             "totalAmount": int(
