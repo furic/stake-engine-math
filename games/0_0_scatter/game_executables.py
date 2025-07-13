@@ -10,10 +10,10 @@ from game_events import send_mult_info_event
 from src.events.events import (
     set_win_event,
     set_total_win_event,
-    trigger_free_spin_event,
+    trigger_free_spins_event,
     update_tumble_win_event,
     update_global_mult_event,
-    update_free_spin_event,
+    update_free_spins_event,
 )
 
 
@@ -47,7 +47,7 @@ class GameExecutables(GameCalculations):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        trigger_free_spin_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        trigger_free_spins_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def get_scatterpays_update_wins(self):
         """Return the board since we are assigning the 'explode' attribute."""
@@ -62,7 +62,7 @@ class GameExecutables(GameCalculations):
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
         self.fs += 1
-        update_free_spin_event(self)
+        update_free_spins_event(self)
         # This game does not reset the global multiplier on each spin
         self.global_multiplier = 1
         update_global_mult_event(self)

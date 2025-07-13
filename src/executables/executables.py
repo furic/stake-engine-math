@@ -2,12 +2,12 @@ from src.state.state_conditions import Conditions
 from src.calculations.tumble import Tumble
 from src.events.events import (
     win_event,
-    end_free_spin_event,
+    end_free_spins_event,
     tumble_board_event,
     update_tumble_win_event,
     win_cap_event,
-    trigger_free_spin_event,
-    update_free_spin_event,
+    trigger_free_spins_event,
+    update_free_spins_event,
     set_final_win_event,
     update_global_mult_event,
 )
@@ -76,23 +76,23 @@ class Executables(Conditions, Tumble):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        trigger_free_spin_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        trigger_free_spins_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def update_fs_retrigger_amt(self, scatter_key: str = "scatter") -> None:
         """Update total freespin amount on retrigger."""
         self.tot_fs += self.config.freespin_triggers[self.gametype][self.count_special_symbols(scatter_key)]
-        trigger_free_spin_event(self, freegame_trigger=True, basegame_trigger=False)
+        trigger_free_spins_event(self, freegame_trigger=True, basegame_trigger=False)
 
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
-        update_free_spin_event(self)
+        update_free_spins_event(self)
         self.fs += 1
         self.win_manager.reset_spin_win()
         self.win_data = {}
 
     def end_freespin(self) -> None:
         """Transmit total amount awarded during freegame."""
-        end_free_spin_event(self)
+        end_free_spins_event(self)
 
     def evaluate_finalwin(self) -> None:
         """Check base and freespin sums, set payout multiplier."""

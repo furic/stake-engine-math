@@ -85,11 +85,11 @@ This function is created by `packages/utils-book/src/createPlayBookUtils.ts`. It
 An object that the key is `bookEvent.type` and value is a `bookEventHandler`. We can find an example in `/apps/lines/src/game/bookEventHandlerMap.ts`.
 
 ```
-// bookEventHandlerMap.ts - Example of "updateFreeSpin" bookEventHandler
+// bookEventHandlerMap.ts - Example of "updateFreeSpins" bookEventHandler
 
 export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContext> = {
   ...,
-  updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
+  updateFreeSpins: async (bookEvent: BookEventOfType<'updateFreeSpins'>) => {
     eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
     eventEmitter.broadcast({
       type: 'freeSpinCounterUpdate',

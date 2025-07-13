@@ -6,10 +6,10 @@ from game_calculations import GameCalculations
 from src.calculations.cluster import Cluster
 from game_events import reveal_event
 from src.events.events import (
-    trigger_free_spin_event,
+    trigger_free_spins_event,
     win_event,
     update_global_mult_event,
-    update_free_spin_event,
+    update_free_spins_event,
     upgrade_event,
     prize_payout_event,
 )
@@ -25,7 +25,7 @@ class GameExecutables(GameCalculations):
             basegame_trigger, freegame_trigger = True, False
         else:
             basegame_trigger, freegame_trigger = False, True
-        trigger_free_spin_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
+        trigger_free_spins_event(self, basegame_trigger=basegame_trigger, freegame_trigger=freegame_trigger)
 
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
@@ -35,7 +35,7 @@ class GameExecutables(GameCalculations):
         if self.fs == 1 and not hasattr(self, 'sticky_symbols'):
             self.initialize_sticky_symbols()
         
-        update_free_spin_event(self)
+        update_free_spins_event(self)
         # This game does not reset the global multiplier on each spin
         self.global_multiplier = 1
         # Skip updateGlobalMult for tower defense game (will be added back in "super" mode later)

@@ -52,7 +52,7 @@ def analyze_wins(filename):
                 if 'events' in game:
                     # First pass: check for freespin triggers
                     for event in game['events']:
-                        if event.get('type') == 'triggerFreeSpin':
+                        if event.get('type') == 'triggerFreeSpins':
                             has_freespin_trigger = True
                             break
                     
@@ -111,7 +111,7 @@ def analyze_wins(filename):
                     if 'events' in game:
                         # First pass: check for freespin triggers
                         for event in game['events']:
-                            if event.get('type') == 'triggerFreeSpin':
+                            if event.get('type') == 'triggerFreeSpins':
                                 has_freespin_trigger = True
                                 break
                         

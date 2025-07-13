@@ -3,7 +3,7 @@
 from game_override import GameStateOverride
 from game_events import win_info_prize_event, new_sticky_event
 from src.calculations.lines import Lines
-from src.events.events import update_free_spin_event, reveal_event, set_total_win_event, set_win_event
+from src.events.events import update_free_spins_event, reveal_event, set_total_win_event, set_win_event
 from game_events import new_expanding_wild_event, update_expanding_wild_event, reveal_prize_event
 from src.calculations.statistics import get_random_outcome
 
@@ -91,7 +91,7 @@ class GameState(GameStateOverride):
             if len(new_sticky_symbols) > 0:
                 new_sticky_event(self, new_sticky_symbols)
                 self.fs = 0
-                update_free_spin_event(self)
+                update_free_spins_event(self)
 
         prize_win = self.get_final_board_prize()
         self.win_data = prize_win

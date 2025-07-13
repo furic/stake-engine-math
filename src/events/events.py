@@ -42,7 +42,7 @@ def reveal_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def trigger_free_spin_event(
+def trigger_free_spins_event(
     gamestate,
     include_padding_index=True,
     basegame_trigger: bool = None,
@@ -61,14 +61,14 @@ def trigger_free_spin_event(
     if basegame_trigger:
         event = {
             "index": len(gamestate.book.events),
-            "type": EventConstants.TRIGGER_FREE_SPIN.value,
+            "type": EventConstants.TRIGGER_FREE_SPINS.value,
             "total": gamestate.tot_fs,
             "positions": scatter_positions,
         }
     elif freegame_trigger:
         event = {
             "index": len(gamestate.book.events),
-            "type": EventConstants.RETRIGGER_FREE_SPIN.value,
+            "type": EventConstants.RETRIGGER_FREE_SPINS.value,
             "total": gamestate.tot_fs,
             "positions": scatter_positions,
         }
@@ -204,22 +204,22 @@ def update_tumble_win_event(gamestate):
     gamestate.book.add_event(event)
 
 
-def update_free_spin_event(gamestate):
+def update_free_spins_event(gamestate):
     """Update the current spin number and total freegame"""
     event = {
         "index": len(gamestate.book.events),
-        "type": EventConstants.UPDATE_FREE_SPIN.value,
+        "type": EventConstants.UPDATE_FREE_SPINS.value,
         "amount": int(gamestate.fs),
         "total": int(gamestate.tot_fs),
     }
     gamestate.book.add_event(event)
 
 
-def end_free_spin_event(gamestate, winlevel_key="endFeature"):
+def end_free_spins_event(gamestate, winlevel_key="endFeature"):
     """End of feature trigger."""
     event = {
         "index": len(gamestate.book.events),
-        "type": EventConstants.END_FREE_SPIN.value,
+        "type": EventConstants.END_FREE_SPINS.value,
         "amount": int(min(gamestate.win_manager.freegame_wins, gamestate.config.wincap) * 100),
         "winLevel": gamestate.config.get_win_level(gamestate.win_manager.freegame_wins, winlevel_key),
     }

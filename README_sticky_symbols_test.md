@@ -41,7 +41,7 @@ python run.py
 
 Then examine the generated books to verify:
 - Sticky symbols persist across free spins
-- Prize events appear before setFinalWin/updateFreeSpin
+- Prize events appear before setFinalWin/updateFreeSpins
 - Prize events check board state, not just upgrades
 
 ## Maintenance

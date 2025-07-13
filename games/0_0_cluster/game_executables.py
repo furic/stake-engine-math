@@ -1,7 +1,7 @@
 from game_calculations import GameCalculations
 from src.calculations.cluster import Cluster
 from game_events import update_grid_mult_event
-from src.events.events import update_free_spin_event
+from src.events.events import update_free_spins_event
 
 
 class GameExecutables(GameCalculations):
@@ -51,7 +51,7 @@ class GameExecutables(GameCalculations):
     def update_freespin(self) -> None:
         """Called before a new reveal during freegame."""
         self.fs += 1
-        update_free_spin_event(self)
+        update_free_spins_event(self)
         self.win_manager.reset_spin_win()
         self.tumblewin_mult = 0
         self.win_data = {}

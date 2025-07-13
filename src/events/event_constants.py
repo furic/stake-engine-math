@@ -16,11 +16,11 @@ class EventConstants(Enum):
     SET_TOTAL_WIN = "setTotalWin"
     WIN_CAP = "winCap"
 
-    # Freespin events
-    UPDATE_FREE_SPIN = "updateFreeSpin"
-    TRIGGER_FREE_SPIN = "triggerFreeSpin"
-    RETRIGGER_FREE_SPIN = "retriggerFreeSpin"
-    END_FREE_SPIN = "endFreeSpin"
+    # Freespins events
+    UPDATE_FREE_SPINS = "updateFreeSpins"
+    TRIGGER_FREE_SPINS = "triggerFreeSpins"
+    RETRIGGER_FREE_SPINS = "retriggerFreeSpins"
+    END_FREE_SPINS = "endFreeSpins"
 
     # Tumble events
     TUMBLE_BOARD = "tumbleBoard"

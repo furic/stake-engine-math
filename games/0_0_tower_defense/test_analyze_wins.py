@@ -36,7 +36,7 @@ def create_sample_books_data():
                             {"symbol": "L4", "count": 5, "amount": 1200}
                         ]
                     },
-                    {"type": "triggerFreeSpin", "total": 10}
+                    {"type": "triggerFreeSpins", "total": 10}
                 ]
             }
         ],
