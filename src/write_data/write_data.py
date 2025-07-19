@@ -190,7 +190,18 @@ def output_lookup_and_force_files(
             "w",
             encoding="UTF-8",
         ) as outfile:
-            json.dump(all_books, outfile)
+            for id, filename in enumerate(file_list):
+                with open(filename, "r", encoding="UTF-8") as infile:
+                    file_data = infile.read()
+                    if filename.endswith(".jsonl"):
+                        outfile.write(file_data)
+                    elif filename.endswith(".json"):
+                        if id == 0:
+                            outfile.write(file_data[:-1])  # don't write final ']'
+                        elif id != len(file_list) - 1:
+                            outfile.write("," + file_data[1:-1])  # don't write first or last '[/]'
+                        else:
+                            outfile.write("," + file_data[1::])  # dont write first '[', write last ']'
 
     print("Saving force files for", game_id, "in", betmode)
     force_results_dict = {}
