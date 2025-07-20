@@ -1,82 +1,124 @@
-# Tower Defense Game
+# 🏰 Tower Defense Game
 
-## Summary:
+## 🎮 Game Overview
 
-* A 5-reel, 5-row, pays only connected symbol cluster (3 or more), no tumble nor cascading.
-* 8 paying total (4 high, 4 low)
-* 2 special symbols (wild, scatter)
+**Defend Your Realm in this Epic 5x5 Cluster-Pay Medieval Fantasy Adventure!**
 
-Symbols payouts are grouped by cluster-sizes 3, 4, 5, ... 14, 15+.
+Welcome to a thrilling tower defense slot experience where strategy meets spectacular wins! In this immersive 2.5D medieval fantasy battlefield, hordes of monsters surround your homeland, and only your tactical prowess can save the day. Build mighty towers, forge powerful clusters, and defend your fortress against the endless siege!
 
+## 🎯 Core Mechanics
 
-## Base Game: 
+**Battle Grid:** 5-reel, 5-row fortress layout with cluster-pay mechanics (3+ connected symbols)
+- **No tumbling or cascading** - pure strategic positioning matters
+- **Cluster-based payouts** grouped by army size: 5-9 formations, 10-14 battalions, 15+ legendary forces
+- **Resource-to-Tower Upgrade System:** Gather 5 resource lands to construct mighty defensive towers
 
-The middle grid (3th reel 3th row) is a blocker and no symbol appears.
+## 🛡️ Symbol Arsenal
 
-Minimum of 3 Scatter symbols needed for Bonus Game trigger.
-8+ spins are awarded for Bonus Game.
+**🌿 5 Resource Lands (L1-L5)** - Essential materials for tower construction:
+- **💎 Crystal (L1)** - Rare gems that power ultimate defenses
+- **⚒️ Iron (L2)** - Metallic strength for advanced weaponry
+- **🌊 Lake (L3)** - Mystical waters that enhance magical properties
+- **🪨 Stone (L4)** - Sturdy building blocks for solid fortifications
+- **🪵 Wood (L5)** - Foundation material for basic defenses
 
+**🏗️ Tower Structures** - Elite defensive installations:
+- **✨ Magic Tower (M1/H1)** - Arcane energy projection systems
+- **🔥 Cannon Tower (M2/H2)** - Explosive firepower installations
+- **❄️ Ice Tower (M3/H3)** - Freezing area control defenses
+- **🪨 Catapult Tower (M4/H4)** - Heavy siege bombardment units
+- **🏹 Archery Tower (M5/H5)** - Swift projectile defense systems
 
-## Bonus Game (Free Spins)
-The middle grid becomes a wild and stay through the Bonus Game.
+**✨ Wild Symbol** - Magical essence that transforms to aid your defense
+**💫 Scatter Symbol** - Ancient runes that unlock bonus campaigns
 
-Every time a 5 high symbols (H1-H3) straight line appears (a full row or a full reel), increments the global multiplier by +1, which is persistent throughout the Bonus Game.
+**Victory Rewards:** Prize towers bestow their treasures at the end of each spin, rewarding your strategic placement!
 
-2 or more Scatters on award 2+ extra spins.
+## ⚔️ Base Game: The Siege Begins
 
-## Super Bonus Game 
+**The Forbidden Center:** The heart of your fortress (3rd reel, 3rd row) remains sealed - a mysterious void that no symbol can occupy. This sacred ground holds ancient power, waiting to be unleashed...
 
-Same as Bonus Game, but every time a 5 symbols straight line happens, it increments the global multiplier, then one of the symbol becomes a wild and stick thought the Super Bonus Game.
+**Tactical Upgrades:** When your resource lands form successful clusters, they evolve into mighty tower defenses!
+- **5+ symbol clusters** → Mid-tier towers (M1-M5) emerge from gathered resources
+- **10+ symbol clusters** → High-tier towers (H2-H5) rise to dominate the battlefield
 
+**🏗️ Construction System:** Collect 5 matching resource lands to automatically construct the corresponding tower:
+- 5 Crystal → Magic Tower | 5 Iron → Cannon Tower | 5 Lake → Ice Tower | 5 Stone → Catapult Tower | 5 Wood → Archery Tower
 
-#### Event descriptions
-"winInfo" Summarises winning combinations. Includes multipliers, symbol positions, payInfo [passed for every tumble event]
-"setWin" this the result for the entire spin (from on Reveal to the next).
+**🌟 Bonus Campaign Trigger:** Gather 3+ Scatter runes to unlock the legendary campaign
+- **8+ Free Spins** awarded for your heroic efforts
 
-## Analysis Tools
+## 🔥 Bonus Game: Free Spins Campaign
 
-### Core Analysis Scripts
+**The Sacred Awakening:** The forbidden center transforms into a **permanent Wild symbol**, radiating magical energy throughout the entire campaign!
+
+**Persistent Towers:** Your prize symbols become **sticky defenders**, maintaining their positions throughout all free spins while continuing to pay tribute after each battle.
+
+**Campaign Extension:** Discover 2+ Scatter runes during the campaign to earn **2+ additional spins** - the battle continues!
+
+## 💎 Super Bonus Game: Legendary Conquest
+
+**Ultimate Power:** Experience all Bonus Game features enhanced with **progressive multipliers**!
+
+**Escalating Glory:** Each successful upgrade increases the **global multiplier by +1**, accumulating tremendous power that persists throughout the entire Super Bonus campaign.
+
+**Victory grows stronger with every strategic move!**
+
+## 📊 Technical Event System
+
+**Event List:**
+
+- **`reveal`** – Reveals the initial board state at the start of a round
+- **`win`** – Comprehensive summary including multipliers, symbol positions, and detailed pay info for each cluster formation
+- **`upgrade`** – Tracks the evolution of resource lands into powerful tower defenses
+- **`trigger_free_spins`** – Triggers the start of free spins (bonus campaign)
+- **`update_free_spins`** – Updates the current free spin count and emits related events
+- **`update_global_mult`** – (Not used in Tower Defense, but present in the codebase for other games) Updates the global multiplier
+
+## 🔧 Analysis Tools
+
+### 🎯 Strategic Analysis Scripts
 
 #### `analyze_clustering.py`
-**Purpose:** Analyzes clustering potential for each symbol in the reel configuration.
+**Purpose:** Evaluates the tactical potential of each resource land in your construction strategy.
 **Usage:** `python analyze_clustering.py`
-**Description:** 
-- Evaluates horizontal and vertical clustering opportunities
-- Calculates clustering scores for each symbol (L1-L5)
-- Identifies maximum cluster sizes and distribution patterns
-- Essential for understanding why certain symbols have low win rates
+**Battle Intelligence:** 
+- Analyzes horizontal and vertical formation opportunities
+- Calculates clustering effectiveness for each resource type (L1-L5)
+- Identifies maximum cluster potential and distribution strategies
+- Critical for understanding why certain resource lands have lower collection rates
 
 #### `analyze_wins.py`
-**Purpose:** Analyzes win distribution from the books JSON files.
+**Purpose:** Analyzes victory distribution from battle records (books JSON files).
 **Usage:** `python analyze_wins.py [filename]`
-**Description:**
-- Parses books_base.json and books_bonus.json files
-- Counts wins per symbol with detailed breakdown
-- Shows cluster sizes and win amounts for L4/L5 symbols
-- Provides percentage distribution of wins across all symbols
+**Victory Analytics:**
+- Parses books_base.json and books_bonus.json battle logs
+- Counts victories per resource/tower type with detailed tactical breakdown
+- Shows cluster sizes and reward amounts for L4/L5 resource lands
+- Provides percentage distribution of wins across all resource and tower types
 - Default analyzes `library/books/books_base.json`
 
-### Usage Examples
+### 🎮 Combat Commands
 
 ```bash
-# Analyze current reel clustering potential
+# Analyze current resource land clustering potential
 python analyze_clustering.py
 
-# Check win distribution after game run
+# Review victory distribution after construction
 python analyze_wins.py
 ```
 
-### Game Configuration Status
+### ⚖️ Battle Configuration Status
 
-**Current Paytable Hierarchy:**
-- L1 (Premium): 1.0x - 60.0x
-- L2 (High): 0.5x - 30.0x  
-- L3 (Medium): 0.2x - 12.0x
-- L4 (Low): 0.1x - 6.0x
-- L5 (Lowest): 0.05x - 3.5x
+**Current Resource & Tower Hierarchy:**
+- **L1 (Crystal Resources):** 1.0x - 60.0x 💎 → ✨ Magic Tower
+- **L2 (Iron Resources):** 0.5x - 30.0x ⚒️ → 🔥 Cannon Tower
+- **L3 (Lake Resources):** 0.2x - 12.0x 🌊 → ❄️ Ice Tower
+- **L4 (Stone Resources):** 0.1x - 6.0x 🪨 → 🪨 Catapult Tower
+- **L5 (Wood Resources):** 0.05x - 3.5x 🪵 → 🏹 Archery Tower
 
-**Optimization Status:** ✅ Complete
-- L4 and L5 clustering optimized for balanced win distribution
-- All symbols now have comparable win rates (18-25%)
-- Game mechanics verified and functioning correctly
-
+**🎯 Optimization Status:** ✅ **Construction Complete**
+- L4 and L5 resource clustering optimized for balanced collection rates
+- All resource types now achieve comparable gathering rates (18-25%)
+- Tower construction mechanics verified and functioning at peak performance
+- **Ready for epic fortress building!**

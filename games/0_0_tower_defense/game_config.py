@@ -19,12 +19,12 @@ class GameConfig(Config):
         os.chdir(PROJECT_PATH)
         super().__init__()
         self.game_id = "0_0_tower_defense"
-        self.game_name = "Tower Defense"
+        self.game_name = "Tower Treasures"
         self.output_regular_json = True
         self.provider_number = 0
-        self.working_name = "Sample scatter pay (pay anywhere)"
+        self.working_name = "Tower Treasures"
         self.wincap = 5000.0
-        self.win_type = "scatter"
+        self.win_type = "cluster"
         self.rtp = 0.9700
         self.construct_paths()
 
