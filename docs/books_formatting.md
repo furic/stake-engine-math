@@ -70,7 +70,7 @@ Notice how simple name objects like `{"name": "L1"}` remain compact on single li
 Simply run your simulation as usual:
 
 ```bash
-make run GAME=0_0_tower_defense
+make run GAME=tower_treasures
 ```
 
 The formatting will happen automatically after the simulation completes.
@@ -91,9 +91,9 @@ The formatting will happen automatically after the simulation completes.
 
 ```
 Formatting books files...
-  Formatting: games/0_0_tower_defense/library/books/books_bonus.jsonl
-  ✅ Formatted: games/0_0_tower_defense/library/books/books_bonus.jsonl (100 lines processed)
-  Formatting: games/0_0_tower_defense/library/books/books_base.jsonl
-  ✅ Formatted: games/0_0_tower_defense/library/books/books_base.jsonl (100 lines processed)
+  Formatting: games/tower_treasures/library/books/books_bonus.jsonl
+  ✅ Formatted: games/tower_treasures/library/books/books_bonus.jsonl (100 lines processed)
+  Formatting: games/tower_treasures/library/books/books_base.jsonl
+  ✅ Formatted: games/tower_treasures/library/books/books_base.jsonl (100 lines processed)
 Books formatting complete! (200 total lines processed)
 ```

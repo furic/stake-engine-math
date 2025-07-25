@@ -12,13 +12,13 @@ endif
 help:
 	@echo "Available commands:"
 	@echo "  make setup                     - Set up virtual environment and install dependencies"
-	@echo "  make run GAME=<game_name>      - Run a specific game (e.g., make run GAME=0_0_tower_defense)"
+	@echo "  make run GAME=<game_name>      - Run a specific game (e.g., make run GAME=tower_treasures)"
 	@echo "  make test                      - Run main project tests"
 	@echo "  make unit-test GAME=<game_name> - Run all unit tests for a specific game"
 	@echo "  make clean                     - Clean up build artifacts"
 	@echo ""
 	@echo "Examples:"
-	@echo "  make unittest GAME=0_0_tower_defense" 
+	@echo "  make unittest GAME=tower_treasures" 
 
 makeVirtual:
 	$(PYTHON) -m venv $(VENV_DIR)
@@ -52,7 +52,7 @@ test:
 	cd $(CURDIR)
 	pytest tests/
 
-# Game-specific unit tests - usage: make unittest GAME=0_0_tower_defense
+# Game-specific unit tests - usage: make unittest GAME=tower_treasures
 # Runs all unit tests for the specified game
 unit-test GAME:
 	cd games/$(GAME) && ../../$(VENV_PY) tests/run_tests.py

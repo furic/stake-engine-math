@@ -16,7 +16,7 @@ class GameState(GameStateOverride):
             # No tumbling - symbols stay on board after winning
             
             # Generate prize payout events for M and H symbols on the board
-            self.generate_prize_payout_events()
+            self.generate_prize_win_events()
 
             self.win_manager.update_gametype_wins(self.gametype)
 
@@ -38,7 +38,7 @@ class GameState(GameStateOverride):
             # No tumbling in free spins either - just cluster detection
             
             # Generate prize payout events for M and H symbols on the board
-            self.generate_prize_payout_events()
+            self.generate_prize_win_events()
 
             self.win_manager.update_gametype_wins(self.gametype)
 

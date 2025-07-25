@@ -307,7 +307,7 @@ def upgrade_event(gamestate, win_symbol: str, upgrade_position: dict, from_posit
     }
     gamestate.book.add_event(event)
 
-def prize_payout_event(gamestate, include_padding_index=True) -> None:
+def prize_win_event(gamestate, include_padding_index=True) -> None:
     """Generate prize payout events for M and H symbols on the board."""
     # Check if game has prize configuration
     if not hasattr(gamestate.config, 'prize_config'):
@@ -335,13 +335,13 @@ def prize_payout_event(gamestate, include_padding_index=True) -> None:
     if prize_positions:
         total_prize_amount = 0
         details = []
-        
+
         for symbol_name, positions in prize_positions.items():
             count = len(positions)
             symbol_payout = prize_paytable.get(symbol_name, 0)
             amount = int(round(symbol_payout * count * 100, 0))
             total_prize_amount += amount
-            
+
             details.append({
                 "symbol": symbol_name,
                 "positions": positions,
@@ -350,7 +350,11 @@ def prize_payout_event(gamestate, include_padding_index=True) -> None:
                 "baseAmount": amount,
                 "multiplier": 1
             })
-        
+
+        # Add the prize win to the current spin win and running bet win
+        gamestate.win_manager.spin_win += total_prize_amount / 100
+        gamestate.win_manager.running_bet_win += total_prize_amount / 100
+
         # Create the prize payout event
         event = {
             "index": len(gamestate.book.events),

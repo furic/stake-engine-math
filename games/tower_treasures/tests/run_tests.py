@@ -6,7 +6,7 @@ Run from tower defense game directory:
     python tests/run_tests.py
 
 Or from project root:
-    python -m games.0_0_tower_defense.tests.run_tests
+    python -m games.tower_treasures.tests.run_tests
 """
 
 import sys

@@ -17,18 +17,18 @@ tests/
 
 ### Option 1: From tower defense game directory
 ```bash
-cd games/0_0_tower_defense
+cd games/tower_treasures
 python tests/test_sticky_symbols.py
 ```
 
 ### Option 2: From project root
 ```bash
-python -m games.0_0_tower_defense.tests.test_sticky_symbols
+python -m games.tower_treasures.tests.test_sticky_symbols
 ```
 
 ### Option 3: Run all tests
 ```bash
-cd games/0_0_tower_defense
+cd games/tower_treasures
 python tests/run_tests.py
 ```
 
@@ -64,7 +64,7 @@ These unit tests focus on:
 
 For full integration testing, use the main game runner and check generated books:
 ```bash
-cd games/0_0_tower_defense
+cd games/tower_treasures
 python run.py
 ```
 

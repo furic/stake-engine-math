@@ -331,7 +331,7 @@ def process_large_json_array(file_path, content):
 def main():
     if len(sys.argv) != 2:
         print("Usage: python3 format_books_json.py <game_directory>")
-        print("Example: python3 format_books_json.py games/0_0_tower_defense")
+        print("Example: python3 format_books_json.py games/tower_treasures")
         sys.exit(1)
     
     game_dir = Path(sys.argv[1])
